@@ -13,3 +13,8 @@ hs_err_pid*
 
 # mvn target dir
 target/
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
