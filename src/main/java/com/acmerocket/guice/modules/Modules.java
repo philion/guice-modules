@@ -32,10 +32,7 @@ import org.reflections.util.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.google.inject.Stage;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -69,11 +66,11 @@ public @interface Modules {
 			this.reflections = new Reflections(cfgBldr);
 		}
 		
-		//Builder(Reflections reflections) {
-		//	this.reflections = reflections;
-		//}
+		public Iterable<? extends Module> build(String... moduleNames) {
+			return this.build(Arrays.asList(moduleNames));
+		}
 		
-		public List<? extends Module> build(String... moduleNames) {
+		public Iterable<? extends Module> build(Iterable<String> moduleNames) {
 			ArrayList<Module> modules = new ArrayList<>();
 			
 			for (Class<?> clazz : this.reflections.getTypesAnnotatedWith(Modules.class)) {
@@ -85,10 +82,6 @@ public @interface Modules {
 			return modules;
 		}
 		
-		public Injector build(Stage stage, String... moduleNames) {
-			return Guice.createInjector(stage, this.build(moduleNames));
-		}
-		
 		private Module create(Class<?> clazz) {
 			try {
 				return (Module) clazz.newInstance();
@@ -98,7 +91,7 @@ public @interface Modules {
 			}
 		}
 		
-		private boolean matches(Class<?> clazz, String... moduleNames) {
+		private boolean matches(Class<?> clazz, Iterable<String> moduleNames) {
 			Modules annotation = clazz.getAnnotation(Modules.class);
 			if (annotation == null) {
 				return false;

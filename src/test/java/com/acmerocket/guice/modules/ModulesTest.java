@@ -18,7 +18,6 @@ package com.acmerocket.guice.modules;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -41,7 +40,7 @@ public class ModulesTest {
 
 	@Test
 	public void testUnknownModule() {
-		List<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("yoyo");
+		Iterable<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("yoyo");
 		Set<?> classes = classSet(modules);
 		assertEquals(1, classes.size());
 		assertTrue(classes.contains(ModuleA.class));
@@ -49,7 +48,7 @@ public class ModulesTest {
 	
 	@Test
 	public void testModuleOne() {
-		List<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("module-one");		
+		Iterable<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("module-one");		
 		Set<?> classes = classSet(modules);
 		//log.info("Classes: {}", classes);
 		assertEquals(3, classes.size());
@@ -60,7 +59,7 @@ public class ModulesTest {
 	
 	@Test
 	public void testModuleTwo() {
-		List<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("module-two");
+		Iterable<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("module-two");
 		Set<?> classes = classSet(modules);
 		//log.info("Classes: {}", classes);
 		assertEquals(4, classes.size());
@@ -72,7 +71,7 @@ public class ModulesTest {
 	
 	@Test
 	public void testModuleThree() {
-		List<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("module-three");
+		Iterable<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("module-three");
 		Set<?> classes = classSet(modules);
 		//log.info("Classes: {}", classes);
 		assertEquals(3, classes.size());
@@ -81,7 +80,7 @@ public class ModulesTest {
 		assertTrue(classes.contains(ModuleF.class));
 	}
 	
-	private static Set<Class<? extends Module>> classSet(List<? extends Module> modules) {
+	private static Set<Class<? extends Module>> classSet(Iterable<? extends Module> modules) {
 		return Sets.newHashSet(Iterables.transform(modules, classesFor));
 	}
 	private static final Function<Module, Class<? extends Module>> classesFor = new Function<Module, Class<? extends Module>>() {
