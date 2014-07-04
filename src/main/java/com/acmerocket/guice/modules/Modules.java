@@ -19,9 +19,102 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Stage;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Modules {
-	String[] value() default ModulesBuilder.DEFAULT_MODULE;
+	static final String DEFAULT_MODULE = "*default*";
+
+	String[] value() default DEFAULT_MODULE;
+	
+	public static class Builder {
+	    private static final Logger LOG = LoggerFactory.getLogger(Modules.Builder.class);
+
+		public static Builder packages(String... basePackages) {
+			return new Builder(basePackages);
+		}
+		
+		private final Reflections reflections;
+		
+		Builder(String... basePackages) {		
+			ConfigurationBuilder cfgBldr = new ConfigurationBuilder();
+			FilterBuilder filterBuilder = new FilterBuilder();
+			for (String basePkg : basePackages) {
+				cfgBldr.addUrls(ClasspathHelper.forPackage(basePkg));
+				filterBuilder.include(FilterBuilder.prefix(basePkg));
+			}
+			cfgBldr.filterInputsBy(filterBuilder).setScanners(new SubTypesScanner(), new TypeAnnotationsScanner());
+
+			this.reflections = new Reflections(cfgBldr);
+		}
+		
+		Builder(Reflections reflections) {
+			this.reflections = reflections;
+		}
+		
+		public List<? extends Module> build(String... moduleNames) {
+			ArrayList<Module> modules = new ArrayList<>();
+			
+			for (Class<?> clazz : this.reflections.getTypesAnnotatedWith(Modules.class)) {
+				if (this.matches(clazz, moduleNames)) {
+					modules.add(this.create(clazz));
+				}
+			}
+			
+			return modules;
+		}
+		
+		public Injector build(Stage stage, String... moduleNames) {
+			return Guice.createInjector(stage, this.build(moduleNames));
+		}
+		
+		private Module create(Class<?> clazz) {
+			try {
+				return (Module) clazz.newInstance();
+			} 
+			catch (InstantiationException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		private boolean matches(Class<?> clazz, String... moduleNames) {
+			Modules annotation = clazz.getAnnotation(Modules.class);
+			if (annotation == null) {
+				return false;
+			}
+
+			String[] annoNames = annotation.value();
+			if (annoNames.length == 1 && DEFAULT_MODULE.equals(annoNames[0])) {
+				LOG.debug("Always loading {}", clazz.getSimpleName());
+				return true;
+			}
+			
+			for (String moduleName : moduleNames) {
+				for (String match : annoNames) {
+					if (match.equals(moduleName)) {
+						LOG.debug("Found match: {} -> {}", clazz.getSimpleName(), match);
+						return true;
+					}
+				}
+			}
+			
+			return false;
+		}
+	}
 }

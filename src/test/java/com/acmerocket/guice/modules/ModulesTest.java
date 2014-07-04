@@ -41,7 +41,7 @@ public class ModulesTest {
 
 	@Test
 	public void testUnknownModule() {
-		List<? extends Module> modules = ModulesBuilder.packages("com.acmerocket.guice.modules").build("yoyo");
+		List<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("yoyo");
 		Set<?> classes = classSet(modules);
 		assertEquals(1, classes.size());
 		assertTrue(classes.contains(ModuleA.class));
@@ -49,7 +49,7 @@ public class ModulesTest {
 	
 	@Test
 	public void testModuleOne() {
-		List<? extends Module> modules = ModulesBuilder.packages("com.acmerocket.guice.modules").build("module-one");		
+		List<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("module-one");		
 		Set<?> classes = classSet(modules);
 		//log.info("Classes: {}", classes);
 		assertEquals(3, classes.size());
@@ -60,7 +60,7 @@ public class ModulesTest {
 	
 	@Test
 	public void testModuleTwo() {
-		List<? extends Module> modules = ModulesBuilder.packages("com.acmerocket.guice.modules").build("module-two");
+		List<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("module-two");
 		Set<?> classes = classSet(modules);
 		//log.info("Classes: {}", classes);
 		assertEquals(4, classes.size());
@@ -72,14 +72,13 @@ public class ModulesTest {
 	
 	@Test
 	public void testModuleThree() {
-		List<? extends Module> modules = ModulesBuilder.packages("com.acmerocket.guice.modules").build("module-three");
+		List<? extends Module> modules = Modules.Builder.packages("com.acmerocket.guice.modules").build("module-three");
 		Set<?> classes = classSet(modules);
 		//log.info("Classes: {}", classes);
 		assertEquals(3, classes.size());
 		assertTrue(classes.contains(ModuleA.class));
 		assertTrue(classes.contains(ModuleD.class));
 		assertTrue(classes.contains(ModuleF.class));
-
 	}
 	
 	private static Set<Class<? extends Module>> classSet(List<? extends Module> modules) {
