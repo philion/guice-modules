@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.reflections.Reflections;
@@ -47,12 +48,16 @@ public @interface Modules {
 	    private static final Logger LOG = LoggerFactory.getLogger(Modules.Builder.class);
 
 		public static Builder packages(String... basePackages) {
+			return new Builder(Arrays.asList(basePackages));
+		}
+		
+		public static Builder packages(Iterable<String> basePackages) {
 			return new Builder(basePackages);
 		}
 		
 		private final Reflections reflections;
 		
-		Builder(String... basePackages) {		
+		Builder(Iterable<String> basePackages) {		
 			ConfigurationBuilder cfgBldr = new ConfigurationBuilder();
 			FilterBuilder filterBuilder = new FilterBuilder();
 			for (String basePkg : basePackages) {
@@ -64,9 +69,9 @@ public @interface Modules {
 			this.reflections = new Reflections(cfgBldr);
 		}
 		
-		Builder(Reflections reflections) {
-			this.reflections = reflections;
-		}
+		//Builder(Reflections reflections) {
+		//	this.reflections = reflections;
+		//}
 		
 		public List<? extends Module> build(String... moduleNames) {
 			ArrayList<Module> modules = new ArrayList<>();
