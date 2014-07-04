@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/philion/guice-modules.svg?branch=master)](https://travis-ci.org/philion/guice-modules)
+
 # guice-modules
 
 Simple annotation based module creation for Guice 3.0
