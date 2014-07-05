@@ -44,16 +44,18 @@ public @interface Modules {
 	    private static final Logger LOG = LoggerFactory.getLogger(Modules.Builder.class);
 
 		public static Builder packages(String... basePackages) {
+			LOG.debug("Adding basePackages: {}", basePackages);
 			return new Builder(Arrays.asList(basePackages));
 		}
 		
 		public static Builder packages(Iterable<String> basePackages) {
+			LOG.debug("Adding basePackages: {}", basePackages);
 			return new Builder(basePackages);
 		}
 		
 		private final Reflections reflections;
 		
-		Builder(Iterable<String> basePackages) {		
+		Builder(Iterable<String> basePackages) {			
 			ConfigurationBuilder cfgBldr = new ConfigurationBuilder();
 			FilterBuilder filterBuilder = new FilterBuilder();
 			for (String basePkg : basePackages) {
@@ -62,7 +64,7 @@ public @interface Modules {
 			}
 			cfgBldr.filterInputsBy(filterBuilder).setScanners(new SubTypesScanner(), new TypeAnnotationsScanner());
 
-			this.reflections = new Reflections(cfgBldr);
+			this.reflections = new Reflections(cfgBldr);			
 		}
 		
 		public Iterable<? extends Module> build(String... moduleNames) {
