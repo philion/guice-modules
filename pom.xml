@@ -6,7 +6,7 @@
     
 	<groupId>com.acmerocket</groupId>
 	<artifactId>guice-modules</artifactId>
-	<version>3.0-SNAPSHOT</version>
+	<version>3.0</version>
 	<name>Guice Auto-Module Support</name>
 	<description>Simple library for using Guice DI with configured modules</description>
 	<url>https://github.com/philion/guice-modules</url>
