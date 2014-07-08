@@ -6,7 +6,7 @@
     
 	<groupId>com.acmerocket</groupId>
 	<artifactId>guice-modules</artifactId>
-	<version>3.0</version>
+	<version>3.0-SNAPSHOT</version>
 	<name>Guice Auto-Module Support</name>
 	<description>Simple library for using Guice DI with configured modules</description>
 	<url>https://github.com/philion/guice-modules</url>
@@ -85,11 +85,13 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-			<!-- 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.5</version>
+                <configuration>
+                    <useAgent>true</useAgent>
+                 </configuration>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
@@ -100,7 +102,6 @@
                     </execution>
                 </executions>
             </plugin>
-			-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -114,7 +115,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
              <groupId>org.apache.maven.plugins</groupId>
              <artifactId>maven-javadoc-plugin</artifactId>
